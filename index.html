@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The ONE Thing - Täglicher Fokus</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+            font-size: 1.1em;
+        }
+
+        .question-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        #oneThingInput {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            border: 3px solid #e0e0e0;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        #oneThingInput:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .current-task {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border: 3px solid #2196f3;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .current-task h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .current-task p {
+            color: #333;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .completed-task {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 3px solid #28a745;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .completed-task span {
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .date-stamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .celebration {
+            display: none;
+            color: #28a745;
+            font-size: 1.5em;
+            margin: 20px 0;
+            animation: bounce 0.5s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .motivational-quote {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-left: 5px solid #ff9800;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: #e65100;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎯</div>
+        <h1>The ONE Thing</h1>
+        <p class="subtitle">Fokus auf das Wesentliche - täglich</p>
+        
+        <div class="question-box">
+            "Was ist das EINE, was ich heute tun kann, wodurch alles andere einfacher oder unnötig wird?"
+        </div>
+
+        <div class="input-section">
+            <input type="text" id="oneThingInput" placeholder="Schreibe dein ONE Thing für heute hier..." maxlength="200">
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="setOneThing()">📝 ONE Thing setzen</button>
+            <button class="btn-success" onclick="completeTask()">✅ Erledigt!</button>
+            <button class="btn-warning" onclick="skipDay()">⏭️ Tag überspringen</button>
+        </div>
+
+        <div id="currentTask" class="current-task" style="display: none;">
+            <h3>🎯 Dein heutiges ONE Thing:</h3>
+            <p id="currentTaskText"></p>
+            <div class="date-stamp" id="taskDate"></div>
+        </div>
+
+        <div class="celebration" id="celebration">
+            🎉 Fantastisch! Du hast dein ONE Thing geschafft! 🎉
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalDays">0</div>
+                <div class="stat-label">Tage aktiv</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedTasks">0</div>
+                <div class="stat-label">Erledigt</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="successRate">0%</div>
+                <div class="stat-label">Erfolgsrate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="currentStreak">0</div>
+                <div class="stat-label">Serie</div>
+            </div>
+        </div>
+
+        <div id="completedHistory" style="margin-top: 30px;"></div>
+
+        <div class="motivational-quote">
+            "Erfolg ist eigentlich ganz einfach: Konzentriere dich auf das Eine und lass alles andere weg." - Gary Keller
+        </div>
+    </div>
+
+    <script>
+        let data = {
+            currentTask: null,
+            taskDate: null,
+            completedTasks: [],
+            skippedDays: [],
+            totalDays: 0,
+            currentStreak: 0
+        };
+
+        // Daten laden
+        function loadData() {
+            const saved = JSON.parse(localStorage.getItem('oneThingData') || '{}');
+            data = { ...data, ...saved };
+            updateDisplay();
+        }
+
+        // Daten speichern
+        function saveData() {
+            localStorage.setItem('oneThingData', JSON.stringify(data));
+        }
+
+        // ONE Thing setzen
+        function setOneThing() {
+            const input = document.getElementById('oneThingInput');
+            const task = input.value.trim();
+            
+            if (!task) {
+                alert('Bitte gib dein ONE Thing ein!');
+                return;
+            }
+
+            const today = new Date().toDateString();
+            
+            // Prüfen ob heute schon eine Aufgabe gesetzt wurde
+            if (data.taskDate === today && data.currentTask) {
+                if (!confirm('Du hast heute bereits ein ONE Thing gesetzt. Möchtest du es ersetzen?')) {
+                    return;
+                }
+            }
+
+            data.currentTask = task;
+            data.taskDate = today;
+            
+            if (!data.completedTasks.some(t => t.date === today) && !data.skippedDays.includes(today)) {
+                data.totalDays++;
+            }
+
+            input.value = '';
+            saveData();
+            updateDisplay();
+            
+            // Motivational feedback
+            document.getElementById('oneThingInput').style.borderColor = '#4CAF50';
+            setTimeout(() => {
+                document.getElementById('oneThingInput').style.borderColor = '#e0e0e0';
+            }, 1000);
+        }
+
+        // Aufgabe als erledigt markieren
+        function completeTask() {
+            if (!data.currentTask) {
+                alert('Setze zuerst dein ONE Thing für heute!');
+                return;
+            }
+
+            const today = new Date().toDateString();
+            
+            if (data.taskDate !== today) {
+                alert('Du kannst nur die heutige Aufgabe als erledigt markieren!');
+                return;
+            }
+
+            // Prüfen ob heute schon abgehakt
+            if (data.completedTasks.some(t => t.date === today)) {
+                alert('Du hast heute bereits eine Aufgabe abgehakt!');
+                return;
+            }
+
+            data.completedTasks.push({
+                task: data.currentTask,
+                date: today,
+                timestamp: new Date().toLocaleString('de-DE')
+            });
+
+            // Streak berechnen
+            calculateStreak();
+
+            data.currentTask = null;
+            data.taskDate = null;
+
+            saveData();
+            updateDisplay();
+            showCelebration();
+        }
+
+        // Tag überspringen
+        function skipDay() {
+            const today = new Date().toDateString();
+            
+            if (data.skippedDays.includes(today)) {
+                alert('Du hast den heutigen Tag bereits übersprungen!');
+                return;
+            }
+
+            if (confirm('Möchtest du den heutigen Tag wirklich überspringen?')) {
+                data.skippedDays.push(today);
+                data.currentTask = null;
+                data.taskDate = null;
+                data.currentStreak = 0; // Serie wird unterbrochen
+                
+                if (!data.completedTasks.some(t => t.date === today)) {
+                    data.totalDays++;
+                }
+
+                saveData();
+                updateDisplay();
+            }
+        }
+
+        // Streak berechnen
+        function calculateStreak() {
+            if (data.completedTasks.length === 0) {
+                data.currentStreak = 0;
+                return;
+            }
+
+            const sortedTasks = data.completedTasks.sort((a, b) => new Date(b.date) - new Date(a.date));
+            let streak = 1;
+            let currentDate = new Date(sortedTasks[0].date);
+
+            for (let i = 1; i < sortedTasks.length; i++) {
+                const taskDate = new Date(sortedTasks[i].date);
+                currentDate.setDate(currentDate.getDate() - 1);
+                
+                if (taskDate.toDateString() === currentDate.toDateString()) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+
+            data.currentStreak = streak;
+        }
+
+        // Erfolgsfeier anzeigen
+        function showCelebration() {
+            const celebration = document.getElementById('celebration');
+            celebration.style.display = 'block';
+            setTimeout(() => {
+                celebration.style.display = 'none';
+            }, 3000);
+        }
+
+        // Display aktualisieren
+        function updateDisplay() {
+            // Aktuelle Aufgabe anzeigen
+            const currentTaskDiv = document.getElementById('currentTask');
+            const currentTaskText = document.getElementById('currentTaskText');
+            const taskDate = document.getElementById('taskDate');
+
+            if (data.currentTask && data.taskDate === new Date().toDateString()) {
+                currentTaskDiv.style.display = 'block';
+                currentTaskText.textContent = data.currentTask;
+                taskDate.textContent = `Gesetzt am: ${new Date(data.taskDate).toLocaleDateString('de-DE')}`;
+            } else {
+                currentTaskDiv.style.display = 'none';
+            }
+
+            // Statistiken aktualisieren
+            const successRate = data.totalDays > 0 ? Math.round((data.completedTasks.length / data.totalDays) * 100) : 0;
+            
+            document.getElementById('totalDays').textContent = data.totalDays;
+            document.getElementById('completedTasks').textContent = data.completedTasks.length;
+            document.getElementById('successRate').textContent = successRate + '%';
+            document.getElementById('currentStreak').textContent = data.currentStreak;
+
+            // Verlauf anzeigen
+            updateHistory();
+        }
+
+        // Verlauf anzeigen
+        function updateHistory() {
+            const historyDiv = document.getElementById('completedHistory');
+            historyDiv.innerHTML = '';
+
+            if (data.completedTasks.length > 0) {
+                const title = document.createElement('h3');
+                title.textContent = '🏆 Erledigte ONE Things';
+                title.style.color = '#333';
+                title.style.marginBottom = '15px';
+                historyDiv.appendChild(title);
+
+                const recentTasks = data.completedTasks
+                    .sort((a, b) => new Date(b.date) - new Date(a.date))
+                    .slice(0, 5);
+
+                recentTasks.forEach(task => {
+                    const taskDiv = document.createElement('div');
+                    taskDiv.className = 'completed-task';
+                    taskDiv.innerHTML = `
+                        <span>${task.task}</span>
+                        <div class="date-stamp">${new Date(task.date).toLocaleDateString('de-DE')}</div>
+                    `;
+                    historyDiv.appendChild(taskDiv);
+                });
+            }
+        }
+
+        // Enter-Taste Support
+        document.getElementById('oneThingInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                setOneThing();
+            }
+        });
+
+        // App initialisieren
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+        });
+    </script>
+</body>
+</html>
